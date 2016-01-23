@@ -1,10 +1,11 @@
 #container_of_offense {
 	position: absolute;
-	width: 400px;
+	width: 300px;
 	bottom: 0px;
 	left: 0;
+	margin: 8px;
 	height: 24px;
-	padding: 8px;
+	border: 1px solid gray;
 }
 
 #container_of_offense .meter-container {
