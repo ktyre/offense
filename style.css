@@ -25,3 +25,20 @@
 	left: 4px;
 	color: white;
 }
+
+#not-cool-breh {
+	position: absolute;
+	float: center;
+	margin: auto;
+	background-image: "icon.png";
+}
+
+/*#container_of_container_of_offense {
+	z-index: -500;
+	width: 300px;
+	bottom: 0px;
+	left: 0;
+	margin: 8px;
+	height: 24px;
+	background-color: black;
+}*/
