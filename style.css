@@ -26,12 +26,16 @@
 	color: white;
 }
 
-#not-cool-breh {
+/*#not-cool-breh {
+	z-index:1000;
 	position: absolute;
-	float: center;
-	margin: auto;
-	background-image: "icon.png";
-}
+	width: 300px;
+	bottom: 0px;
+	left: 0;
+	margin: 8px;
+	height: 24px;
+	border: 1px solid gray;
+}*/
 
 /*#container_of_container_of_offense {
 	z-index: -500;
