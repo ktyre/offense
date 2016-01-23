@@ -1,11 +1,26 @@
-#meter {
+#container_of_offense {
 	position: absolute;
+	width: 400px;
 	bottom: 0px;
 	left: 0;
-	color: white;
+	height: 24px;
+	padding: 8px;
+}
+
+#container_of_offense .meter-container {
+	position: relative;
+}
+
+#container_of_offense .meter-container .meter-amount {
+	position: absolute;
+	left: 0;
 	background-color: red;
 	height: 24px;
-	vertical-align: middle;
-	line-height: 12px;
-	padding: 8px;
+}
+
+#container_of_offense .meter-container .meter-flavor {
+	position: absolute;
+	top: 0;
+	left: 4px;
+	color: white;
 }
