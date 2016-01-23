@@ -1,0 +1,11 @@
+#meter {
+	position: absolute;
+	right: 0;
+	color: white;
+	background-color: red;
+	height: 40px;
+	border-radius: 3px;
+	vertical-align: middle;
+	line-height: 20px;
+	padding: 8px;
+}
