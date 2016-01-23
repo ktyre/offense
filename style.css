@@ -14,6 +14,8 @@
 
 #container_of_offense .meter-container .meter-amount {
 	position: absolute;
+	-webkit-transition: width 2s;
+    transition: width 2s;
 	left: 0;
 	background-color: red;
 	height: 24px;
@@ -26,16 +28,30 @@
 	color: white;
 }
 
-/*#not-cool-breh {
-	z-index:1000;
-	position: absolute;
-	width: 300px;
-	bottom: 0px;
-	left: 0;
-	margin: 8px;
+#container_of_offense .meter-container .meter-flavor-good {
 	height: 24px;
-	border: 1px solid gray;
-}*/
+	background-color: white;
+	font-size: 18px;
+	color: green;
+}
+
+#not-cool-breh {
+	box-sizing: border-box;
+	border: 1px solid #e5e6e9;
+	border-bottom: 0;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	width: 494px;
+	background-color: white;
+	border-radius: ;
+	padding: 6px 12px;
+}
+
+#not-cool-breh .bad-word {
+	color: red;
+	font-size: 18px;
+	font-weight: 600;
+}
 
 /*#container_of_container_of_offense {
 	z-index: -500;

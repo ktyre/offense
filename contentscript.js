@@ -43,8 +43,9 @@ var offenses = {
   "I just bought a condo in Manhattan": "Looks like you might have way too much money"
 }
 
-var offense_keys = new Array();
-var offense_values = new Array();
+var currentOffenses = {};
+var offense_keys = [];
+var offense_values = [];
 var offending_index;
 
 // Intended as a hacky af way to remember what has already been detected/notified
@@ -55,17 +56,7 @@ for (var key in offenses) {
   offense_values.push(offenses[key]);
 }
 
-// var matchInOffendedArray = function(string, expressions) {
-//   var len = expressions.length,
-//     i = 0;
-//   for (; i < len; i++) {
-//     if (string.match(expressions[i])) {
-//       return true;
-//     }
-//   }
-//   return false;
-// };
-
+// Expressions = keys
 var matchInArray = function(string, expressions) {
   var len = expressions.length,
     i = 0;
@@ -83,27 +74,30 @@ var matchInArray = function(string, expressions) {
 // TODO: Come up with a way to measure how offensive you are (just by number of offensive things,
 // does each thing have a score of how offensive it is? etc)
 function displayMeter(amount) {
+	const youAreNotTerribleGoodForYou = amount == 0 
+		? '<span class="meter-flavor meter-flavor-good">You are not terrible! Good for you!</span>'
+		: '<span class="meter-flavor">Offense.ly meter</span>';
 	$('#container_of_container_of_offense').remove();
 	return '<div id="container_of_container_of_offense">\
 		<div id="container_of_offense">\
 			<div class="meter-container">\
 				<span class="meter-amount" style="width:' + amount + '%;"></span>\
-				<span class="meter-flavor">You are terrible.</span>\
+				' + (amount == 100 
+						? '<span class="meter-flavor">You are terrible.</span>' 
+						: youAreNotTerribleGoodForYou) + '\
 			</div>\
 		</div>\
 	</div>';
 }
 
-function renderWidget($target) {
-	var amount = Math.random()*100;
+function renderMeter($target, amount) {
 	// If there isn't any text in it, set amount to 0 and remove flavor
 	if ($target.val() == '') {
 		// TOFIX: I think keypress doesn't actually register backspace.
 		offenders = [];
-		amount = 0;
 		$('#container_of_offense .meter-flavor').text('Hurray no one will be offended!');
 	}
-	const meter = displayMeter(Math.random()*100);	
+	const meter = displayMeter(amount);	
 	// Facebook's status textarea
 	if ($target.hasClass('uiTextareaAutogrow')) {
 		// Assuming it has two uiLists; the top bar and the one right below the input field
@@ -115,27 +109,47 @@ function renderWidget($target) {
 	}
 }
 
-var offended = function(offense) {
-	return $($('#contentArea')).before('<div id="not-cool-breh"><p>' + offense + '</p></div>');
+function renderTextBox($target, words) {
+	debugger
 }
 
-var hardFeelings = function(text) {
-	if(matchInArray(text, offense_keys)) {
-		return offended(offense_values[offending_index]);
+var offended = function(meanWord) {
+	if (!currentOffenses[meanWord]) {
+		$($('#not-cool-breh')).append('<p>\
+			<span class="bad-word">' + meanWord + ': </span>\
+			<span>' + offenses[meanWord] + '</span>\
+		</p>');
+		currentOffenses[meanWord] = true;
 	}
 }
 
-$(document).ready(function() {
-	// Fucking fuck twitter.
-	$('#tweet-box-home-timeline').click(function(e) {
-		renderWidget($($(e.target).children()[0]));
-	});
+var hardFeelings = function($target) {
+	var displayString = '';
+	var meterPercent = 0;
+	const words = $target.val().split(' ');
+	for (var i = 0; i < words.length; i++) {
+		var potentialMeanWord = words[i].replace(/[.;'"?!:,]/, '');
+		if (offenses[potentialMeanWord]) {
+			displayString += offended(potentialMeanWord);
+			meterPercent = 100;
+		} else {
+			displayString += words[i];
+		}
+		if (i > 5 && meterPercent != 100) {
+			meterPercent += 10;
+		}
+	}
+	renderMeter($target, meterPercent);
+}
 
-	$('textarea, input').keypress(function(e) {
-		// Currently need to go one character beyond the string to be detected...
-		// console.log($(e.target).val());
-		hardFeelings($(e.target).val());
-		renderWidget($(e.target));
+$(document).ready(function() {
+	$($('#contentArea')).before('<div id="not-cool-breh"></div>');
+	$('textarea, input').keyup(function(e) {
+		currentOffenses = new Object();
+		$('#not-cool-breh').text('');
+
+		// Check hardfeelings on on spacebar, enter, or backspace
+		hardFeelings($(e.target));
 	});
 });
 
