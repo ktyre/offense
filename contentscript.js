@@ -43,7 +43,7 @@ const OFFENSES = {
   "I just bought a condo in Manhattan": "Looks like you might have way too much money"
 }
 
-const YOU_TALK_TOO_MUCH_WORD_COUNT = 15;
+const YOU_TALK_TOO_MUCH_WORD_COUNT = 20;
 const YOU_TALK_TOO_MUCH_STRING = 'Blah blah blah, shut the fuck up.';
 const NO_OFFENSES_HEADER = 'None! Hurray!';
 
@@ -76,8 +76,7 @@ function displayMeter(amount) {
 	</div>';
 }
 
-function renderMeter($target, amount) {
-	amount = amount > 1 ? 1 : amount;
+function renderMeter($target, amount) {	
 	// If there isn't any text in it, set amount to 0 and remove flavor
 	if ($target.val() == '') {
 		// TOFIX: I think keypress doesn't actually register backspace.
@@ -107,7 +106,7 @@ var offended = function(meanWord, words) {
 			&mdash;<span>' + OFFENSES[meanWord] + '</span>\
 		</p>');
 		currentOffenses[meanWord] = true;
-	} else if (!meanWord && words.length > YOU_TALK_TOO_MUCH_WORD_COUNT && !currentOffenses['_blahblah']) {
+	} else if (!meanWord && words.length > YOU_TALK_TOO_MUCH_WORD_COUNT) {
 		$($('.not-cool-breh-offenses')).append('<p>\
 			<span class="bad-word">' + YOU_TALK_TOO_MUCH_STRING + '</span>\
 		</p>');
@@ -124,7 +123,7 @@ var hardFeelings = function($target) {
 	for (var i = 0; i < fodderForOffense.length; i++) {
 		var potentialMeanWord = fodderForOffense[i].replace(/[.;'"?!:,]/, '');
 		if (OFFENSES[potentialMeanWord]) {
-			displayString += offended(potentialMeanWord, fodderForOffense);
+			displayString += offended(potentialMeanWord, null);
 			meterRatio = 1;
 		} else {
 			displayString += fodderForOffense[i];
@@ -135,9 +134,11 @@ var hardFeelings = function($target) {
 		}
 	}
 
-	if (Object.keys(currentOffenses).length == 0) {
+	meterRatio = meterRatio > 1 ? 1 : meterRatio;
+	if (!currentOffenses['_blahblah']) {
 		offended(null, words);
 	}
+
 	renderMeter($target, meterRatio);
 }
 
