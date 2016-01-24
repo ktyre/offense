@@ -130,7 +130,6 @@ var hardFeelings = function($target) {
 			displayString += fodderForOffense[i];
 		}
 
-		console.log(meterRatio)
 		if (i > YOU_TALK_TOO_MUCH_WORD_COUNT - 10 && meterRatio <= 1 && i < words.length) {
 			meterRatio += 0.1;
 		}
