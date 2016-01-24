@@ -43,6 +43,10 @@ var offenses = {
   "I just bought a condo in Manhattan": "Looks like you might have way too much money"
 }
 
+const YOU_TALK_TOO_MUCH_WORD_COUNT = 20;
+const YOU_TALK_TOO_MUCH_STRING = 'Brevity is the soul of wit, fucker.';
+const NO_OFFENSES_HEADER = 'None! Hurray!';
+
 var currentOffenses = {};
 var offense_keys = [];
 var offense_values = [];
@@ -113,13 +117,18 @@ function renderTextBox($target, words) {
 	debugger
 }
 
-var offended = function(meanWord) {
-	if (!currentOffenses[meanWord]) {
-		$($('#not-cool-breh')).append('<p>\
-			<span class="bad-word">' + meanWord + ': </span>\
-			<span>' + offenses[meanWord] + '</span>\
+var offended = function(meanWord, words) {
+	if (meanWord && !currentOffenses[meanWord]) {
+		$($('.not-cool-breh-offenses')).append('<p>\
+			<span class="bad-word">' + meanWord + '</span>\
+			&mdash;<span>' + offenses[meanWord] + '</span>\
 		</p>');
 		currentOffenses[meanWord] = true;
+	} else if (words.length > YOU_TALK_TOO_MUCH_WORD_COUNT && !currentOffenses['_blahblah']) {
+		$($('.not-cool-breh-offenses')).append('<p>\
+			<span class="bad-word">' + YOU_TALK_TOO_MUCH_STRING + '</span>\
+		</p>');
+		currentOffenses['_blahblah'];
 	}
 }
 
@@ -130,23 +139,28 @@ var hardFeelings = function($target) {
 	for (var i = 0; i < words.length; i++) {
 		var potentialMeanWord = words[i].replace(/[.;'"?!:,]/, '');
 		if (offenses[potentialMeanWord]) {
-			displayString += offended(potentialMeanWord);
+			displayString += offended(potentialMeanWord, words);
 			meterPercent = 100;
 		} else {
 			displayString += words[i];
 		}
-		if (i > 5 && meterPercent != 100) {
+
+		if (i > YOU_TALK_TOO_MUCH_WORD_COUNT - 10 && meterPercent != 100) {
 			meterPercent += 10;
 		}
 	}
+	offended(null, words);
 	renderMeter($target, meterPercent);
 }
 
 $(document).ready(function() {
-	$($('#contentArea')).before('<div id="not-cool-breh"></div>');
+	$($('#contentArea')).before('<div id="not-cool-breh">\
+			<h1>Offenses</h1>\
+			<div class="not-cool-breh-offenses">' + NO_OFFENSES_HEADER + '</div>\
+	</div>');
 	$('textarea, input').keyup(function(e) {
 		currentOffenses = new Object();
-		$('#not-cool-breh').text('');
+		$('.not-cool-breh-offenses').empty();
 
 		// Check hardfeelings on on spacebar, enter, or backspace
 		hardFeelings($(e.target));

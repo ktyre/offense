@@ -1,3 +1,8 @@
+.mbm {
+	border-top-left-radius: 0px !important;
+	border-top-right-radius: 0px !important;
+}
+
 #container_of_offense {
 	position: absolute;
 	width: 300px;
@@ -24,7 +29,8 @@
 #container_of_offense .meter-container .meter-flavor {
 	position: absolute;
 	top: 0;
-	left: 4px;
+	left: 0;
+	padding: 0 4px;
 	color: white;
 }
 
@@ -37,11 +43,11 @@
 
 #not-cool-breh {
 	box-sizing: border-box;
-	border: 1px solid #e5e6e9;
+	border: 1px solid #dfe0e4;
 	border-bottom: 0;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
-	width: 494px;
+	width: 496px;
 	background-color: white;
 	border-radius: ;
 	padding: 6px 12px;
