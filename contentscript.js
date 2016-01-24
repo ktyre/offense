@@ -1,4 +1,4 @@
-var offenses = {
+const OFFENSES = {
   "gyp": "Roma",
   "Gypsies": "Roma",
   "feminazi": "Feminists, Nazis",
@@ -43,37 +43,19 @@ var offenses = {
   "I just bought a condo in Manhattan": "Looks like you might have way too much money"
 }
 
-const YOU_TALK_TOO_MUCH_WORD_COUNT = 20;
-const YOU_TALK_TOO_MUCH_STRING = 'Brevity is the soul of wit, fucker.';
+const YOU_TALK_TOO_MUCH_WORD_COUNT = 15;
+const YOU_TALK_TOO_MUCH_STRING = 'Blah blah blah, shut the fuck up.';
 const NO_OFFENSES_HEADER = 'None! Hurray!';
 
-var currentOffenses = {};
-var offense_keys = [];
-var offense_values = [];
-var offending_index;
-
-// Intended as a hacky af way to remember what has already been detected/notified
-// var offenders = new Array();
-
-for (var key in offenses) {
-  offense_keys.push(key);
-  offense_values.push(offenses[key]);
+function findPotentialOffensiveExpressions(words) {
+	const potentialOffensiveExpressions = [];
+	for (var i = 0; i < words.length; i++) {
+		for (var j = i + 1; j < words.length; j++) {
+			potentialOffensiveExpressions.push(words.slice(i, j).join(' '));
+		}
+	}
+	return potentialOffensiveExpressions;
 }
-
-// Expressions = keys
-var matchInArray = function(string, expressions) {
-  var len = expressions.length,
-    i = 0;
-  for (; i < len; i++) {
-    if (string.indexOf(expressions[i]) > -1) {
-      // if(matchInOffendedArray(expressions[i], offenders)) { return false }
-      // offenders.push(expressions[i]);
-      offending_index = i;
-      return true;
-    }
-  }
-  return false;
-};
 
 // TODO: Come up with a way to measure how offensive you are (just by number of offensive things,
 // does each thing have a score of how offensive it is? etc)
@@ -95,13 +77,14 @@ function displayMeter(amount) {
 }
 
 function renderMeter($target, amount) {
+	amount = amount > 1 ? 1 : amount;
 	// If there isn't any text in it, set amount to 0 and remove flavor
 	if ($target.val() == '') {
 		// TOFIX: I think keypress doesn't actually register backspace.
 		offenders = [];
 		$('#container_of_offense .meter-flavor').text('Hurray no one will be offended!');
 	}
-	const meter = displayMeter(amount);	
+	const meter = displayMeter(amount*100);	
 	// Facebook's status textarea
 	if ($target.hasClass('uiTextareaAutogrow')) {
 		// Assuming it has two uiLists; the top bar and the one right below the input field
@@ -121,7 +104,7 @@ var offended = function(meanWord, words) {
 	if (meanWord && !currentOffenses[meanWord]) {
 		$($('.not-cool-breh-offenses')).append('<p>\
 			<span class="bad-word">' + meanWord + '</span>\
-			&mdash;<span>' + offenses[meanWord] + '</span>\
+			&mdash;<span>' + OFFENSES[meanWord] + '</span>\
 		</p>');
 		currentOffenses[meanWord] = true;
 	} else if (words.length > YOU_TALK_TOO_MUCH_WORD_COUNT && !currentOffenses['_blahblah']) {
@@ -134,23 +117,27 @@ var offended = function(meanWord, words) {
 
 var hardFeelings = function($target) {
 	var displayString = '';
-	var meterPercent = 0;
+	var meterRatio = 0;
 	const words = $target.val().split(' ');
-	for (var i = 0; i < words.length; i++) {
-		var potentialMeanWord = words[i].replace(/[.;'"?!:,]/, '');
-		if (offenses[potentialMeanWord]) {
-			displayString += offended(potentialMeanWord, words);
-			meterPercent = 100;
+	const expressions = findPotentialOffensiveExpressions(words);
+	const fodderForOffense = words.concat(expressions);
+	for (var i = 0; i < fodderForOffense.length; i++) {
+		var potentialMeanWord = fodderForOffense[i].replace(/[.;'"?!:,]/, '');
+		if (OFFENSES[potentialMeanWord]) {
+			displayString += offended(potentialMeanWord, fodderForOffense);
+			meterRatio = 1;
 		} else {
-			displayString += words[i];
+			displayString += fodderForOffense[i];
 		}
 
-		if (i > YOU_TALK_TOO_MUCH_WORD_COUNT - 10 && meterPercent != 100) {
-			meterPercent += 10;
+		console.log(meterRatio)
+		if (i > YOU_TALK_TOO_MUCH_WORD_COUNT - 10 && meterRatio <= 1 && i < words.length) {
+			meterRatio += 0.1;
 		}
 	}
+
 	offended(null, words);
-	renderMeter($target, meterPercent);
+	renderMeter($target, meterRatio);
 }
 
 $(document).ready(function() {
