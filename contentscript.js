@@ -107,11 +107,11 @@ var offended = function(meanWord, words) {
 			&mdash;<span>' + OFFENSES[meanWord] + '</span>\
 		</p>');
 		currentOffenses[meanWord] = true;
-	} else if (words.length > YOU_TALK_TOO_MUCH_WORD_COUNT && !currentOffenses['_blahblah']) {
+	} else if (!meanWord && words.length > YOU_TALK_TOO_MUCH_WORD_COUNT && !currentOffenses['_blahblah']) {
 		$($('.not-cool-breh-offenses')).append('<p>\
 			<span class="bad-word">' + YOU_TALK_TOO_MUCH_STRING + '</span>\
 		</p>');
-		currentOffenses['_blahblah'];
+		currentOffenses['_blahblah'] = true;
 	}
 }
 
@@ -136,7 +136,9 @@ var hardFeelings = function($target) {
 		}
 	}
 
-	offended(null, words);
+	if (Object.keys(currentOffenses).length == 0) {
+		offended(null, words);
+	}
 	renderMeter($target, meterRatio);
 }
 
